@@ -17,22 +17,11 @@ if(TARGET flatbuffers OR flatbuffers_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
-
-OverridableFetchContent_Declare(
-  flatbuffers
-  GIT_REPOSITORY https://github.com/google/flatbuffers
-  # Sync with tensorflow/third_party/flatbuffers/workspace.bzl
-  GIT_TAG v23.1.21
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/flatbuffers"
-)
-
-OverridableFetchContent_GetProperties(flatbuffers)
-if(NOT flatbuffers_POPULATED)
-  OverridableFetchContent_Populate(flatbuffers)
-endif()
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(flatbuffers_SOURCE_DIR "${TFLITE_DEPS_DIR}/flatbuffers")
+set(flatbuffers_BINARY_DIR "${CMAKE_BINARY_DIR}/flatbuffers-build")
+set(flatbuffers_POPULATED TRUE)
 
 option(FLATBUFFERS_BUILD_TESTS OFF)
 # Required for Windows, since it has macros called min & max which
@@ -68,6 +57,7 @@ endif()
 ExternalProject_Add(flatbuffers-flatc
   PREFIX ${CMAKE_BINARY_DIR}/flatbuffers-flatc
   SOURCE_DIR ${flatbuffers_SOURCE_DIR}
+  DOWNLOAD_COMMAND ""  # No download needed, using local source
   CMAKE_ARGS -DCMAKE_CXX_FLAGS="-DNOMINMAX=1"
              -DFLATBUFFERS_BUILD_TESTS=OFF
              -DFLATBUFFERS_BUILD_FLATLIB=OFF

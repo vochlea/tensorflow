@@ -1,5 +1,5 @@
 #
-# Copyright 2021 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2020 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,22 +17,11 @@ if(TARGET re2 OR re2_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
-
-OverridableFetchContent_Declare(
-  re2
-  GIT_REPOSITORY https://github.com/google/re2.git
-  GIT_TAG 2021-02-02
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/re2"
-)
-OverridableFetchContent_GetProperties(re2)
-if(NOT re2_POPULATED)
-  OverridableFetchContent_Populate(re2)
-endif()
-
-option(RE2_BUILD_TESTING OFF)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(re2_SOURCE_DIR "${TFLITE_DEPS_DIR}/re2")
+set(re2_BINARY_DIR "${CMAKE_BINARY_DIR}/re2-build")
+set(re2_POPULATED TRUE)
 
 add_subdirectory(
   "${re2_SOURCE_DIR}"

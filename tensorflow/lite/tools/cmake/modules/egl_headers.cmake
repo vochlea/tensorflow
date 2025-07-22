@@ -17,23 +17,12 @@ if(TARGET egl_headers OR egl_headers_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(egl_headers_SOURCE_DIR "${TFLITE_DEPS_DIR}/egl_headers")
+set(egl_headers_BINARY_DIR "${CMAKE_BINARY_DIR}/egl_headers-build")
+set(egl_headers_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  egl_headers
-  GIT_REPOSITORY https://github.com/KhronosGroup/EGL-Registry.git
-  # No reference in TensorFlow Bazel rule since it's used for GPU Delegate
-  # build without using Android NDK.
-  GIT_TAG 649981109e263b737e7735933c90626c29a306f2
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/egl_headers"
-)
-
-OverridableFetchContent_GetProperties(egl_headers)
-if(NOT egl_headers)
-  OverridableFetchContent_Populate(egl_headers)
-endif()
 
 include_directories(
   AFTER

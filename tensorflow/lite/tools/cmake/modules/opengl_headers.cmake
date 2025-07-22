@@ -17,23 +17,12 @@ if(TARGET opengl_headers OR opengl_headers_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(opengl_headers_SOURCE_DIR "${TFLITE_DEPS_DIR}/opengl_headers")
+set(opengl_headers_BINARY_DIR "${CMAKE_BINARY_DIR}/opengl_headers-build")
+set(opengl_headers_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  opengl_headers
-  GIT_REPOSITORY https://github.com/KhronosGroup/OpenGL-Registry.git
-  # No reference in TensorFlow Bazel rule since it's used for GPU Delegate
-  # build without using Android NDK.
-  GIT_TAG 0cb0880d91581d34f96899c86fc1bf35627b4b81
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/opengl_headers"
-)
-
-OverridableFetchContent_GetProperties(opengl_headers)
-if(NOT opengl_headers)
-  OverridableFetchContent_Populate(opengl_headers)
-endif()
 
 include_directories(
   AFTER

@@ -1,5 +1,5 @@
 #
-# Copyright 2021 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2020 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,20 +17,12 @@ if(TARGET cpuinfo OR cpuinfo_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(cpuinfo_SOURCE_DIR "${TFLITE_DEPS_DIR}/cpuinfo")
+set(cpuinfo_BINARY_DIR "${CMAKE_BINARY_DIR}/cpuinfo-build")
+set(cpuinfo_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  cpuinfo
-  GIT_REPOSITORY https://github.com/pytorch/cpuinfo
-  # Sync with tensorflow/third_party/cpuinfo/workspace.bzl
-  GIT_TAG 3dc310302210c1891ffcfb12ae67b11a3ad3a150
-  GIT_PROGRESS TRUE
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/cpuinfo"
-)
-OverridableFetchContent_GetProperties(cpuinfo)
-if(NOT cpuinfo_POPULATED)
-  OverridableFetchContent_Populate(cpuinfo)
-endif()
 
 set(CPUINFO_SOURCE_DIR "${cpuinfo_SOURCE_DIR}" CACHE PATH "CPUINFO source directory")
 set(CPUINFO_BUILD_TOOLS OFF CACHE BOOL "Disable cpuinfo command-line tools")

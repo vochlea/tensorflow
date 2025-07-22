@@ -17,21 +17,12 @@ if(TARGET xnnpack OR xnnpack_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(xnnpack_SOURCE_DIR "${TFLITE_DEPS_DIR}/xnnpack")
+set(xnnpack_BINARY_DIR "${CMAKE_BINARY_DIR}/xnnpack-build")
+set(xnnpack_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  xnnpack
-  GIT_REPOSITORY https://github.com/google/XNNPACK
-  # Sync with tensorflow/workspace2.bzl
-  GIT_TAG b9d4073a6913891ce9cbd8965c8d506075d2a45a
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/xnnpack"
-)
-OverridableFetchContent_GetProperties(xnnpack)
-if(NOT xnnpack_POPULATED)
-  OverridableFetchContent_Populate(xnnpack)
-endif()
 
 # May consider setting XNNPACK_USE_SYSTEM_LIBS if we want to control all
 # dependencies by TFLite.

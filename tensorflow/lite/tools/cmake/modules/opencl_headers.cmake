@@ -17,22 +17,12 @@ if(TARGET opencl_headers OR opencl_headers_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(opencl_headers_SOURCE_DIR "${TFLITE_DEPS_DIR}/opencl_headers")
+set(opencl_headers_BINARY_DIR "${CMAKE_BINARY_DIR}/opencl_headers-build")
+set(opencl_headers_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  opencl_headers
-  GIT_REPOSITORY https://github.com/KhronosGroup/OpenCL-Headers
-  # Sync with tensorflow/third_party/opencl_headers/workspace.bzl
-  GIT_TAG dcd5bede6859d26833cd85f0d6bbcee7382dc9b3
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/opencl_headers"
-)
-
-OverridableFetchContent_GetProperties(opencl_headers)
-if(NOT opencl_headers)
-  OverridableFetchContent_Populate(opencl_headers)
-endif()
 
 include_directories(
   AFTER

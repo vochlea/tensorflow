@@ -13,27 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Use absl_base as a proxy for the project being included.
-if(TARGET absl_base OR abseil-cpp_POPULATED)
+if(TARGET abseil-cpp OR abseil-cpp_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(abseil-cpp_SOURCE_DIR "${TFLITE_DEPS_DIR}/abseil-cpp")
+set(abseil-cpp_BINARY_DIR "${CMAKE_BINARY_DIR}/abseil-cpp-build")
+set(abseil-cpp_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  abseil-cpp
-  GIT_REPOSITORY https://github.com/abseil/abseil-cpp
-  # Sync with tensorflow/third_party/absl/workspace.bzl
-  GIT_TAG b971ac5250ea8de900eae9f95e06548d14cd95fe
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/abseil-cpp"
-)
-OverridableFetchContent_GetProperties(abseil-cpp)
-if(NOT abseil-cpp_POPULATED)
-  OverridableFetchContent_Populate(abseil-cpp)
-endif()
 
 set(ABSL_USE_GOOGLETEST_HEAD OFF CACHE BOOL "Disable googletest")
 set(ABSL_RUN_TESTS OFF CACHE BOOL "Disable build of ABSL tests")

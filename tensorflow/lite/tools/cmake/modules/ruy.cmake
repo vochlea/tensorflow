@@ -17,20 +17,12 @@ if(TARGET ruy OR ruy_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(ruy_SOURCE_DIR "${TFLITE_DEPS_DIR}/ruy")
+set(ruy_BINARY_DIR "${CMAKE_BINARY_DIR}/ruy-build")
+set(ruy_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  ruy
-  GIT_REPOSITORY https://github.com/google/ruy
-  # Sync with tensorflow/third_party/ruy/workspace.bzl
-  GIT_TAG 3286a34cc8de6149ac6844107dfdffac91531e72
-  GIT_PROGRESS TRUE
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/ruy"
-)
-OverridableFetchContent_GetProperties(ruy)
-if(NOT ruy_POPULATED)
-  OverridableFetchContent_Populate(ruy)
-endif()
 
 set(RUY_SOURCE_DIR "${ruy_SOURCE_DIR}" CACHE PATH "RUY source directory")
 

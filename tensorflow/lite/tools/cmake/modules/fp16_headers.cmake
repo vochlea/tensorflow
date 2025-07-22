@@ -1,5 +1,5 @@
 #
-# Copyright 2021 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2020 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,27 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Skip installation when xnnpack is used since it also has fp16 headers.
-if(TARGET fp16_headers OR fp16_headers_POPULATED OR TFLITE_ENABLE_XNNPACK)
+if(TARGET fp16_headers OR fp16_headers_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(fp16_headers_SOURCE_DIR "${TFLITE_DEPS_DIR}/fp16_headers")
+set(fp16_headers_BINARY_DIR "${CMAKE_BINARY_DIR}/fp16_headers-build")
+set(fp16_headers_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  fp16_headers
-  GIT_REPOSITORY https://github.com/Maratyszcza/FP16
-  # Sync with https://github.com/google/XNNPACK/blob/master/cmake/DownloadFP16.cmake
-  GIT_TAG 0a92994d729ff76a58f692d3028ca1b64b145d91
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/fp16_headers"
-)
-
-OverridableFetchContent_GetProperties(fp16_headers)
-if(NOT fp16_headers)
-  OverridableFetchContent_Populate(fp16_headers)
-endif()
 
 include_directories(
   AFTER

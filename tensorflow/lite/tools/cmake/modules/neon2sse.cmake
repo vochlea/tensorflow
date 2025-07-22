@@ -13,24 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include(ExternalProject)
-
 if(TARGET neon2sse OR neon2sse_POPULATED)
   return()
 endif()
 
-OverridableFetchContent_Declare(
-  neon2sse
-  URL https://storage.googleapis.com/mirror.tensorflow.org/github.com/intel/ARM_NEON_2_x86_SSE/archive/a15b489e1222b2087007546b4912e21293ea86ff.tar.gz
-  # Sync with tensorflow/workspace2.bzl
-  URL_HASH SHA256=019fbc7ec25860070a1d90e12686fc160cfb33e22aa063c80f52b363f1361e9d
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/neon2sse"
-)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(neon2sse_SOURCE_DIR "${TFLITE_DEPS_DIR}/neon2sse")
+set(neon2sse_BINARY_DIR "${CMAKE_BINARY_DIR}/neon2sse-build")
+set(neon2sse_POPULATED TRUE)
 
-OverridableFetchContent_GetProperties(neon2sse)
-if(NOT neon2sse_POPULATED)
-  OverridableFetchContent_Populate(neon2sse)
-endif()
 
 add_subdirectory(
   "${neon2sse_SOURCE_DIR}"

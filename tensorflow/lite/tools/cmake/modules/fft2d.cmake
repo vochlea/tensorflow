@@ -17,21 +17,12 @@ if(TARGET fft2d OR fft2d_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(fft2d_SOURCE_DIR "${TFLITE_DEPS_DIR}/fft2d")
+set(fft2d_BINARY_DIR "${CMAKE_BINARY_DIR}/fft2d-build")
+set(fft2d_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  fft2d
-  URL https://storage.googleapis.com/mirror.tensorflow.org/github.com/petewarden/OouraFFT/archive/v1.0.tar.gz
-  # Sync with tensorflow/workspace2.bzl
-  URL_HASH SHA256=5f4dabc2ae21e1f537425d58a49cdca1c49ea11db0d6271e2a4b27e9697548eb
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/fft2d"
-  LICENSE_FILE "readme2d.txt"
-  LICENSE_URL "http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html"
-)
-OverridableFetchContent_GetProperties(fft2d)
-if(NOT fft2d_POPULATED)
-  OverridableFetchContent_Populate(fft2d)
-endif()
 
 set(FFT2D_SOURCE_DIR "${fft2d_SOURCE_DIR}" CACHE PATH "fft2d source")
 add_subdirectory(

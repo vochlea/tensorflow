@@ -17,27 +17,12 @@ if(TARGET eigen OR eigen_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(eigen_SOURCE_DIR "${TFLITE_DEPS_DIR}/eigen")
+set(eigen_BINARY_DIR "${CMAKE_BINARY_DIR}/eigen-build")
+set(eigen_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  # Sync with tensorflow/third_party/eigen3/workspace.bzl
-  GIT_TAG b0f877f8e01e90a5b0f3a79d46ea234899f8b499
-  # It's not currently (cmake 3.17) possible to shallow clone with a GIT TAG
-  # as cmake attempts to git checkout the commit hash after the clone
-  # which doesn't work as it's a shallow clone hence a different commit hash.
-  # https://gitlab.kitware.com/cmake/cmake/-/issues/17770
-  # GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-  PREFIX "${CMAKE_BINARY_DIR}"
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/eigen"
-  LICENSE_FILE "COPYING.MPL2"
-)
-OverridableFetchContent_GetProperties(eigen)
-if(NOT eigen_POPULATED)
-  OverridableFetchContent_Populate(eigen)
-endif()
 
 # Patch Eigen to disable Fortran compiler check for BLAS and LAPACK tests.
 if(NOT EIGEN_DISABLED_FORTRAN_COMPILER_CHECK)

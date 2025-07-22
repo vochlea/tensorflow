@@ -1,5 +1,5 @@
 #
-# Copyright 2021 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2020 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,27 +17,15 @@ if(TARGET nsync OR nsync_POPULATED)
   return()
 endif()
 
-include(OverridableFetchContent)
+# Use local source instead of fetching from network
+set(TFLITE_DEPS_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../../../deps")
+set(nsync_SOURCE_DIR "${TFLITE_DEPS_DIR}/nsync")
+set(nsync_BINARY_DIR "${CMAKE_BINARY_DIR}/nsync-build")
+set(nsync_POPULATED TRUE)
 
-OverridableFetchContent_Declare(
-  nsync
-  GIT_REPOSITORY https://github.com/google/nsync.git
-  GIT_TAG 1.22.0
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-  SOURCE_DIR "${CMAKE_BINARY_DIR}/nsync"
-)
-OverridableFetchContent_GetProperties(nsync)
-if(NOT nsync_POPULATED)
-  OverridableFetchContent_Populate(nsync)
-endif()
-
-option(NSYNC_ENABLE_TESTS OFF)
-
+set(NSYNC_LANGUAGE CXX)
+set(NSYNC_BUILD_TESTS OFF)
 add_subdirectory(
   "${nsync_SOURCE_DIR}"
   "${nsync_BINARY_DIR}"
-  EXCLUDE_FROM_ALL
 )
-
-target_include_directories(nsync_cpp PUBLIC ${nsync_SOURCE_DIR}/public)
