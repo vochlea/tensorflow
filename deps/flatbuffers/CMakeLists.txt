@@ -494,6 +494,7 @@ endif()
 
 if(FLATBUFFERS_BUILD_FLATC)
   add_executable(flatc ${FlatBuffers_Compiler_SRCS})
+  set_target_properties(flatc PROPERTIES MACOSX_BUNDLE FALSE)
   if(FLATBUFFERS_ENABLE_PCH)
     add_pch_to_target(flatc include/flatbuffers/pch/flatc_pch.h)
   endif()
